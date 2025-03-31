@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SNOMED Concept Diagram</title>
+  <style>
+    body { margin: 0; padding: 0; }
+    #diagram-container { width: 800px; height: 600px; background: white; }
+    #diagram-container-diagram-toolbar { display: none; }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="lib/jquery.svg.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
+</head>
+<body>
+  <div id="diagram-container"></div>
+
+  <!-- Load the SNOMED diagram renderer -->
+  <script id="diagram-template" type="text/x-handlebars-template">
+    <div class="container" style="max-width: 100%;">
+      <div id="concept-diagram-body" class="row" style="overflow: auto; width: 1000;"></div>
+    </div>
+  </script>
+  <script src="lib/snomed-interaction-components.min.js"></script>
+  <script src="drawConceptDiagram.js"></script>
+  <script>
+    window.renderConceptDiagram = function(concept) {
+      const container = $('#diagram-container');
+      container.html('');
+      const options = {
+        ungroupedAttributes: [],
+      }
+      drawConceptDiagram(concept, container, options);
+    };
+    const concept = $.get('https://browser.ihtsdotools.org/snowstorm/snomed-ct/browser/MAIN/2025-03-01/concepts/195967001?descendantCountForm=inferred',
+            function(data, status) {
+              window.renderConceptDiagram(data)
+            })
+  </script>
+</body>
+</html>
