@@ -29,6 +29,11 @@
       container.html('');
       const options = {
         ungroupedAttributes: [],
+        defaultLanguage: 'en'
+      }
+      // Ensure we have the FSN term
+      if (!concept.fsn) {
+        concept.fsn = concept.descriptions.find(d => d.type === 'FSN' && d.active);
       }
       drawConceptDiagram(concept, container, options);
     };
