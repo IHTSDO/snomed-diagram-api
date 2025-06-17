@@ -14,5 +14,7 @@ http://localhost:3000/diagram
 
 The response will be the concept diagram as a PNG image.
 
+An example diagram can be generated using http://localhost:3000/test
+
 ## Note
-Currently, this is a quick and dirty app that does not use best practise for build etc.
+This is a quick and dirty app intended for internal backend use only.

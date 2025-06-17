@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { generateDiagramPNG } = require('./diagramRenderer');
+const exampleConcept = require('./example-concept.json');
 
 const app = express();
 const port = 3000;
@@ -22,6 +23,20 @@ app.post('/diagram', async (req, res) => {
   } catch (err) {
     console.error('Error generating diagram:', err);
     res.status(500).send({ error: 'Failed to generate diagram' });
+  }
+});
+
+app.get('/test', async (req, res) => {
+  const concept = exampleConcept;
+
+  try {
+    const imageBuffer = await generateDiagramPNG(concept);
+    res.set('Content-Type', 'image/png');
+    res.set('Content-Disposition', 'inline; filename="diagram.png"');
+    res.end(imageBuffer, 'binary');
+  } catch (err) {
+    console.error('Error generating diagram for test endpoint:', err);
+    res.status(500).send({ error: 'Failed to generate test diagram' });
   }
 });
 
