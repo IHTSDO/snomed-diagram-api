@@ -7,6 +7,21 @@
     body { margin: 0; padding: 0; }
     #diagram-container { background: white; }
     #diagram-container-diagram-toolbar { display: none; }
+    
+    /* Fix text centering for concrete value boxes */
+    .concrete-value text {
+      text-anchor: middle !important;
+    }
+    
+    /* Alternative approach: target the specific text elements within concrete value boxes */
+    .concrete-value .sct-text {
+      text-anchor: middle !important;
+    }
+    
+    /* Ensure all text in concrete value boxes is centered */
+    .concrete-value tspan {
+      text-anchor: middle !important;
+    }
   </style>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="lib/jquery.svg.min.js"></script>
