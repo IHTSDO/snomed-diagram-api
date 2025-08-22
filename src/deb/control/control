@@ -1,0 +1,16 @@
+Package: snomed-diagram-api
+Version: 1.1.0
+Section: web
+Priority: optional
+Architecture: all
+Depends: nodejs (>= 18.0.0), npm (>= 9.0.0), supervisor, chromium-browser
+Maintainer: SNOMED International <info@snomed.org>
+Description: SNOMED CT Concept Diagram API
+ This API provides a way to generate a concept diagram for a given SNOMED CT concept.
+ The diagram is generated as an SVG image and returned as a PNG file.
+ .
+ The service runs on port 3000 and provides endpoints for:
+  - POST /diagram - Generate diagram from concept JSON
+  - GET /test - Generate example diagram
+ .
+ This is intended for internal backend use only.

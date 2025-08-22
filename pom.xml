@@ -13,4 +13,201 @@
     <name>SNOMED CT Diagram API</name>
     <description>API for generating SNOMED CT concept diagrams as PNG images</description>
 
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <packageName>snomed-diagram-api</packageName>
+        <node.version>22.16.0</node.version>
+        <npm.version>11.4.2</npm.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- Frontend Maven Plugin to handle Node.js and npm -->
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.15.0</version>
+                <configuration>
+                    <nodeVersion>v${node.version}</nodeVersion>
+                    <npmVersion>${npm.version}</npmVersion>
+                    <workingDirectory>.</workingDirectory>
+                </configuration>
+                <executions>
+                    <!-- Install Node.js and npm -->
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+                    <!-- Install npm dependencies -->
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+            <!-- Copy application files to target directory -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-app-files</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/app</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>app</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-package-json</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>.</directory>
+                                    <includes>
+                                        <include>package.json</include>
+                                        <include>package-lock.json</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Create a JAR file containing the application -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>false</addClasspath>
+                            <mainClass>org.snomed.diagram.api.NodeAppLauncher</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- JDeb Plugin for creating Debian package -->
+            <plugin>
+                <groupId>org.vafer</groupId>
+                <artifactId>jdeb</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+                            <deb>${project.build.directory}/${packageName}-${project.version}-all.deb</deb>
+                            <controlDir>${basedir}/src/deb/control</controlDir>
+                            <snapshotExpand>true</snapshotExpand>
+                            <snapshotEnv>BUILD_NUMBER</snapshotEnv>
+                            <verbose>true</verbose>
+                            <classifier>all</classifier>
+                            <signPackage>false</signPackage>
+                            <dataSet>
+                                <!-- Application files -->
+                                <data>
+                                    <src>${project.build.directory}/app</src>
+                                    <dst>/opt/${packageName}/app</dst>
+                                    <type>directory</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/${packageName}/</prefix>
+                                        <filemode>644</filemode>
+                                        <dirmode>755</dirmode>
+                                    </mapper>
+                                </data>
+                                <!-- Package.json and dependencies -->
+                                <data>
+                                    <src>${project.build.directory}/package.json</src>
+                                    <dst>/opt/${packageName}/package.json</dst>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/${packageName}/</prefix>
+                                        <filemode>644</filemode>
+                                    </mapper>
+                                </data>
+                                <data>
+                                    <src>${project.build.directory}/package-lock.json</src>
+                                    <dst>/opt/${packageName}/package-lock.json</dst>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/${packageName}/</prefix>
+                                        <filemode>644</filemode>
+                                    </mapper>
+                                </data>
+                                <!-- Node modules (if pre-installed) -->
+                                <data>
+                                    <src>node_modules</src>
+                                    <dst>/opt/${packageName}/node_modules</dst>
+                                    <type>directory</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/${packageName}/</prefix>
+                                        <filemode>644</filemode>
+                                        <dirmode>755</dirmode>
+                                    </mapper>
+                                </data>
+                                <!-- Supervisor configuration -->
+                                <data>
+                                    <src>${basedir}/src/deb/supervisor.conf</src>
+                                    <dst>/etc/supervisor/conf.d/${packageName}.conf</dst>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <filemode>644</filemode>
+                                    </mapper>
+                                </data>
+
+                                <!-- Startup script -->
+                                <data>
+                                    <src>${basedir}/src/deb/start.sh</src>
+                                    <dst>/opt/${packageName}/start.sh</dst>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/opt/${packageName}/</prefix>
+                                        <filemode>755</filemode>
+                                    </mapper>
+                                </data>
+                            </dataSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

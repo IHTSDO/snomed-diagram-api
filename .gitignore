@@ -16,6 +16,15 @@ dist/
 build/
 *.bundle.js
 
+# Maven build artifacts
+target/
+*.deb
+.mvn/
+
+# Maven frontend plugin artifacts
+node/
+node_modules/
+
 # IDE and editor files
 .idea/
 .vscode/
