@@ -49,7 +49,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>install --production</arguments>
                         </configuration>
                     </execution>
 
@@ -98,6 +98,22 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-node-modules</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/node_modules</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>node_modules</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -110,7 +126,6 @@
                     <archive>
                         <manifest>
                             <addClasspath>false</addClasspath>
-                            <mainClass>org.snomed.diagram.api.NodeAppLauncher</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -139,7 +154,7 @@
                                 <!-- Application files -->
                                 <data>
                                     <src>${project.build.directory}/app</src>
-                                    <dst>/opt/${packageName}/app</dst>
+                                    <dst>/opt/${packageName}</dst>
                                     <type>directory</type>
                                     <mapper>
                                         <type>perm</type>
@@ -171,12 +186,12 @@
                                 </data>
                                 <!-- Node modules (if pre-installed) -->
                                 <data>
-                                    <src>node_modules</src>
+                                    <src>${project.build.directory}/node_modules</src>
                                     <dst>/opt/${packageName}/node_modules</dst>
                                     <type>directory</type>
                                     <mapper>
                                         <type>perm</type>
-                                        <prefix>/opt/${packageName}/</prefix>
+                                        <prefix>/opt/${packageName}/node_modules/</prefix>
                                         <filemode>644</filemode>
                                         <dirmode>755</dirmode>
                                     </mapper>

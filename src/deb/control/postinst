@@ -6,14 +6,15 @@ if ! id "snomed-diagram" &>/dev/null; then
     useradd --system --shell /bin/false --home-dir /opt/snomed-diagram-api snomed-diagram
 fi
 
+# Create log directory
+mkdir -p /var/log/snomed-diagram-api
+chown snomed-diagram:snomed-diagram /var/log/snomed-diagram-api
+
 # Set proper ownership
 chown -R snomed-diagram:snomed-diagram /opt/snomed-diagram-api
 
-# Install npm dependencies
-cd /opt/snomed-diagram-api
-if [ -f package.json ]; then
-    npm install --production
-fi
+# Note: Dependencies are pre-installed during the build process
+# No npm installation needed at runtime
 
 # Reload supervisor configuration
 if command -v supervisorctl >/dev/null 2>&1; then

@@ -38,12 +38,31 @@ mvn clean package
 
 ### Installing the Debian Package
 
+#### Prerequisites
+Before installing the package, ensure you have the required dependencies:
+
+```bash
+# Update package list
+sudo apt-get update
+
+# Install required dependencies
+sudo apt-get install nodejs supervisor
+
+# Install optional but recommended dependencies
+sudo apt-get install npm chromium-browser
+```
+
+#### Installation
 ```bash
 # Install the package (requires sudo)
-sudo dpkg -i target/snomed-diagram-api-1.1.0-all.deb
+sudo dpkg -i snomed-diagram-api-*.deb
 
 # If there are dependency issues, fix them with:
 sudo apt-get install -f
+
+# Setup puppeteer with fixed version of chrome
+sudo -u snomed-diagram PUPPETEER_CACHE_DIR=/opt/snomed-diagram-api/.cache/puppeteer npx puppeteer browsers install chrome@134.0.6998.35
+
 ```
 
 ### Service Management
@@ -52,16 +71,16 @@ The package installs the application as a system service managed by supervisorct
 
 ```bash
 # Check service status
-sudo supervisorctl status snomed-diagram-api
+sudo supervisorctl status snomed-diagram-api:
 
 # Start the service
-sudo supervisorctl start snomed-diagram-api
+sudo supervisorctl start snomed-diagram-api:
 
 # Stop the service
-sudo supervisorctl stop snomed-diagram-api
+sudo supervisorctl stop snomed-diagram-api:
 
 # Restart the service
-sudo supervisorctl restart snomed-diagram-api
+sudo supervisorctl restart snomed-diagram-api:
 
 # View logs
 sudo tail -f /var/log/snomed-diagram-api/out.log

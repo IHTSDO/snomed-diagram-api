@@ -34,4 +34,4 @@ fi
 # Start the application
 echo "Starting SNOMED Diagram API..."
 cd "$APP_DIR"
-exec node app/server.js
+exec node server.js

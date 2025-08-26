@@ -3,7 +3,10 @@ set -e
 
 # Stop supervisor service
 if command -v supervisorctl >/dev/null 2>&1; then
-    supervisorctl stop snomed-diagram-api || true
+    # Check if the service is running before trying to stop it
+    if supervisorctl status snomed-diagram-api 2>/dev/null | grep -q "RUNNING"; then
+        supervisorctl stop snomed-diagram-api || true
+    fi
     supervisorctl remove snomed-diagram-api || true
 fi
 
