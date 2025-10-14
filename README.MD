@@ -42,14 +42,14 @@ mvn clean package
 Before installing the package, ensure you have the required dependencies:
 
 ```bash
+# Add NodeJS debian package source
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+
 # Update package list
 sudo apt-get update
 
-# Install required dependencies
-sudo apt-get install nodejs supervisor
-
-# Install optional but recommended dependencies
-sudo apt-get install npm chromium-browser
+# Install NodeJS 20.x
+sudo apt-get install nodejs
 ```
 
 #### Installation
@@ -63,6 +63,12 @@ sudo apt-get install -f
 # Setup puppeteer with fixed version of chrome
 sudo -u snomed-diagram PUPPETEER_CACHE_DIR=/opt/snomed-diagram-api/.cache/puppeteer npx puppeteer browsers install chrome@134.0.6998.35
 
+# Add chrome dependencies
+sudo apt-get install -y \
+  libgbm1 libdrm2 libxshmfence1 libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 \
+  libatk-bridge2.0-0 libatk1.0-0 libgtk-3-0 libnss3 libxss1 libasound2 \
+  libcups2 libxkbcommon0 libxkbcommon-x11-0 libxfixes3 libglib2.0-0 \
+  fonts-liberation ca-certificates xdg-utils
 ```
 
 ### Service Management
