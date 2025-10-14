@@ -9,7 +9,11 @@ const port = 3000;
 app.use(bodyParser.json({ limit: '5mb' }));
 
 app.get('/', (req, res) => {
-  res.send('Welcome to the SNOMED CT Diagram API. See documentation here: https://github.com/ihtsdo/snomed-diagram-api');
+  res.send('<h4>Welcome to the SNOMED CT Diagram API</h4>' +
+      '<ul>' +
+      '<li><a href="test">Generate test diagram</a></li>' +
+      '<li><a href="https://github.com/ihtsdo/snomed-diagram-api" target="_blank">Documentation</a></li>' +
+      '</ul>')
 });
 
 app.post('/diagram', async (req, res) => {
