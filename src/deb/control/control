@@ -1,5 +1,5 @@
 Package: snomed-diagram-api
-Version: 1.1.0
+Version: 1.1.1
 Section: web
 Priority: optional
 Architecture: all
