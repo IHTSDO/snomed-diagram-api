@@ -33,7 +33,7 @@
   <!-- Load the SNOMED diagram renderer -->
   <script id="diagram-template" type="text/x-handlebars-template">
     <div class="container" style="max-width: 100%;">
-      <div id="concept-diagram-body" class="row" style="overflow: auto; width: 1000;"></div>
+      <div id="concept-diagram-body" class="row" style="overflow: auto; width: 1000px;"></div>
     </div>
   </script>
   <script src="lib/snomed-interaction-components.min.js"></script>
@@ -52,10 +52,6 @@
       }
       drawConceptDiagram(concept, container, options);
     };
-    const concept = $.get('https://browser.ihtsdotools.org/snowstorm/snomed-ct/browser/MAIN/2025-03-01/concepts/195967001?descendantCountForm=inferred',
-            function(data, status) {
-              window.renderConceptDiagram(data)
-            })
   </script>
 </body>
 </html>
