@@ -63,17 +63,26 @@ sudo apt-get install -f
 # Setup puppeteer with fixed version of chrome
 sudo -u snomed-diagram PUPPETEER_CACHE_DIR=/opt/snomed-diagram-api/.cache/puppeteer npx puppeteer browsers install chrome@134.0.6998.35
 
-# Add chrome dependencies
+# Add chrome dependencies (Ubuntu 24.04 and later, which use the t64 package names)
 sudo apt-get install -y \
   libgbm1 libdrm2 libxshmfence1 libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 \
-  libatk-bridge2.0-0 libatk1.0-0 libgtk-3-0 libnss3 libxss1 libasound2 \
-  libcups2 libxkbcommon0 libxkbcommon-x11-0 libxfixes3 libglib2.0-0 \
+  libatk-bridge2.0-0t64 libatk1.0-0t64 libgtk-3-0t64 libnss3 libxss1 libasound2t64 \
+  libcups2t64 libxkbcommon0 libxkbcommon-x11-0 libxfixes3 libglib2.0-0t64 \
   fonts-liberation ca-certificates xdg-utils
 ```
 
+On Ubuntu 22.04 and earlier, use the original package names instead: `libatk-bridge2.0-0 libatk1.0-0 libgtk-3-0 libasound2 libcups2 libglib2.0-0`.
+On 24.04, apt maps the other `t64` renames automatically, but `libasound2` is a virtual package and fails with
+`Package 'libasound2' has no installation candidate`, so `libasound2t64` must be named explicitly.
+
+Chrome is only launched on the first diagram request, so a missing Chrome or missing libraries do not stop the service
+starting. They show up as `Could not find Chrome` or shared-library errors in `err.log`.
+
 ### Service Management
 
-The package installs the application as a system service managed by supervisorctl:
+The package installs the application as a system service managed by supervisorctl.
+The process is named `snomed-diagram-api_00` inside the group `snomed-diagram-api`, so always use the group
+form with a trailing colon (or `snomed-diagram-api:*`). A bare `snomed-diagram-api` fails with `ERROR (no such process)`.
 
 ```bash
 # Check service status
